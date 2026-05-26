@@ -242,6 +242,9 @@
       'entry.701202988': hotel ? hotel.value : '未填寫',
     });
 
+    // Debug: 印出送出的資料
+    console.log('送出資料：', params.toString());
+
     try {
       await fetch('https://docs.google.com/forms/d/e/1FAIpQLSfBzKCaq9U0JuV-ZBW2DpwEHph768SFS1rREFvamSIcfZnoRA/formResponse', {
         method: 'POST',
