@@ -247,21 +247,29 @@
       'entry.701202988': hotel ? hotel.value : '未填寫',
     });
 
-    // Debug: 印出送出的資料
-    console.log('送出資料：', params.toString());
+    // 建立隱藏 form 直接 submit，避免登入狀態造成 400
+    const FORM_ID = '1FAIpQLSfBzKCaq9U0JuV-ZBW2DpwEHph768SFS1rREFvamSIcfZnoRA';
+    const formEl = document.createElement('form');
+    formEl.method = 'POST';
+    formEl.action = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+    formEl.target = 'hidden_iframe';
 
-    try {
-      await fetch('https://docs.google.com/forms/d/e/1FAIpQLSfBzKCaq9U0JuV-ZBW2DpwEHph768SFS1rREFvamSIcfZnoRA/formResponse', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString()
-      });
-    } catch(e) { /* no-cors 模式忽略錯誤，資料仍會送出 */ }
+    params.forEach((value, key) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      formEl.appendChild(input);
+    });
+
+    document.body.appendChild(formEl);
+    formEl.submit();
+    document.body.removeChild(formEl);
 
     document.getElementById('formContent').classList.add('hidden');
     document.getElementById('successMsg').classList.add('show');
   }
 </script>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 </body>
 </html>
