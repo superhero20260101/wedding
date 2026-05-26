@@ -81,7 +81,7 @@
       <div class="header-ornament">
         <div class="ornament-line"></div><div class="ornament-diamond"></div><div class="ornament-line right"></div>
       </div>
-      <div class="header-date">2027 年 1 月 23 日</div>
+      <div class="header-date">2027 年 1 月 23 日　午宴</div>
       <div class="header-venue">台北 · 文華東方酒店</div>
       <div class="header-subtitle">蔡孝容 &amp; 陳韋彤 誠摯邀請您出席我們的婚禮</div>
       <div class="deadline-badge">✦ 請於 2025 年 7 月 1 日前完成回覆 ✦</div>
@@ -182,6 +182,14 @@
           </div>
         </div>
 
+        <div class="section-divider"></div>
+        <div class="section-title">時空留言機</div>
+
+        <div class="form-group">
+          <label>寫下您對新人的祝福或想說的話</label>
+          <textarea id="message" placeholder="寫下您的祝福..." rows="4" style="width:100%;padding:14px 16px;border:1px solid #e0dbd0;border-radius:2px;font-family:'Noto Serif TC',serif;font-size:15px;color:#2c2c2c;background:#fff;transition:border-color 0.2s,box-shadow 0.2s;outline:none;resize:vertical;"></textarea>
+        </div>
+
         <button class="submit-btn" id="submitBtn" onclick="submitForm()">確認出席 · RSVP</button>
       </div>
 
@@ -245,6 +253,7 @@
       'entry.625533623': kidsmeal ? kidsmeal.value : '未填寫',
       'entry.1260385367': invite.value,
       'entry.701202988': hotel ? hotel.value : '未填寫',
+      'entry.142443545': document.getElementById('message').value.trim(),
     });
 
     // 建立隱藏 form 直接 submit，避免登入狀態造成 400
