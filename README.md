@@ -1,1 +1,285 @@
-# wedding
+# weddingHTML
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>婚禮出席確認表 · 蔡孝容 & 陳韋彤</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html, body { background: #0e0e0e; font-family: 'Noto Serif TC', serif; color: #2c2c2c; height: auto; min-height: 100%; }
+  body { overflow-x: hidden; padding-bottom: 60px; }
+  
+  :root { --emerald: #1a5c45; --emerald-pale: #e8f2ee; --gold: #b8975a; --cream: #faf8f4; }
+  .bg-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #0e0e0e 0%, #1a1a1a 50%, #0e1a14 100%); z-index: 0; }
+  .container { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 20px 40px; }
+  
+  .hero { position: relative; width: 100%; max-width: 680px; margin: 0 auto; overflow: hidden; background: #0e0e0e; }
+  .hero img { width: 100%; height: auto; display: block; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(14,14,14,0.0) 0%, rgba(14,14,14,0.0) 50%, rgba(14,14,14,0.4) 80%, rgba(14,14,14,1) 100%); }
+  .hero-text { position: absolute; bottom: 25px; left: 0; right: 0; text-align: center; padding: 0 24px; z-index: 2; }
+  
+  .hero-label { font-size: 11px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; display: block; }
+  .couple-names { font-family: 'Playfair Display', serif; font-size: 46px; font-weight: 600; color: #fff; letter-spacing: 2px; line-height: 1.15; }
+  .couple-names .amp { color: var(--gold); font-style: italic; font-weight: 400; margin: 0 10px; }
+  .header { text-align: center; padding: 32px 0 40px; }
+  .header-ornament { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px; }
+  .ornament-line { height: 1px; width: 50px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+  .header-date { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; letter-spacing: 3px; margin-bottom: 6px; }
+  .header-venue { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 3px; margin-bottom: 16px; }
+  .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); letter-spacing: 1px; line-height: 2; }
+  .deadline-badge { display: inline-block; margin-top: 14px; padding: 6px 18px; border: 1px solid rgba(184,151,90,0.4); border-radius: 20px; font-size: 12px; color: var(--gold); letter-spacing: 1px; }
+  .form-card { background: var(--cream); border-radius: 4px; padding: 48px; position: relative; overflow: hidden; }
+  .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--emerald), var(--gold), var(--emerald)); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 11px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 24px; padding-bottom: 10px; border-bottom: 1px solid rgba(184,151,90,0.2); }
+  .form-group { margin-bottom: 28px; }
+  label { display: block; font-size: 12px; letter-spacing: 2px; color: #666; text-transform: uppercase; margin-bottom: 8px; font-weight: 500; }
+  label .required { color: var(--emerald); margin-left: 2px; }
+  input[type="text"], input[type="tel"], input[type="number"], select { width: 100%; padding: 14px 16px; border: 1px solid #e0dbd0; border-radius: 2px; font-family: 'Noto Serif TC', serif; font-size: 15px; color: #2c2c2c; background: #fff; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none; outline: none; }
+  input:focus, select:focus { border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(26,92,69,0.08); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; cursor: pointer; }
+  .radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .radio-group.horizontal { flex-direction: row; flex-wrap: wrap; }
+  .radio-option { position: relative; }
+  .radio-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .radio-option label { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border: 1px solid #e0dbd0; border-radius: 2px; cursor: pointer; font-size: 14px; letter-spacing: 1px; text-transform: none; color: #444; background: #fff; transition: all 0.15s; margin: 0; user-select: none; white-space: nowrap; }
+  .radio-option label::before { content: ''; width: 16px; height: 16px; border: 1.5px solid #ccc; border-radius: 50%; flex-shrink: 0; transition: all 0.15s; }
+  .radio-option input:checked + label { border-color: var(--emerald); background: var(--emerald-pale); color: var(--emerald); }
+  .radio-option input:checked + label::before { background: var(--emerald); border-color: var(--emerald); box-shadow: inset 0 0 0 3px #fff; }
+  .children-count { margin-top: 12px; display: none; }
+  .children-count.visible { display: block; }
+  .hotel-highlight { background: linear-gradient(135deg, #0e1a14, #162d20); border-radius: 3px; padding: 20px 24px; margin-bottom: 24px; border: 1px solid rgba(26,92,69,0.4); }
+  .hotel-name { font-family: 'Playfair Display', serif; font-size: 15px; color: #fff; letter-spacing: 1px; margin-bottom: 4px; }
+  .hotel-price { font-size: 22px; font-weight: 600; color: var(--gold); font-family: 'Playfair Display', serif; }
+  .hotel-price span { font-size: 13px; color: rgba(255,255,255,0.45); font-family: 'Noto Serif TC', serif; font-weight: 400; margin-left: 6px; }
+  .hotel-desc { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+  .section-divider { height: 1px; background: linear-gradient(90deg, transparent, #e0dbd0, transparent); margin: 36px 0; }
+  .submit-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--emerald) 0%, #0d3d2a 100%); color: #fff; border: none; border-radius: 2px; font-family: 'Noto Serif TC', serif; font-size: 13px; letter-spacing: 4px; cursor: pointer; transition: all 0.25s; margin-top: 8px; }
+  .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,92,69,0.35); }
+  .submit-btn.sending { opacity: 0.6; pointer-events: none; }
+  .success-message { display: none; text-align: center; padding: 48px 32px; }
+  .success-message.show { display: block; }
+  .success-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--emerald-pale); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px; }
+  .success-message h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--emerald); margin-bottom: 8px; }
+  .success-message p { font-size: 14px; color: #888; line-height: 1.8; }
+  .form-content.hidden { display: none; }
+  .footer-note { text-align: center; margin-top: 32px; font-size: 12px; color: rgba(255,255,255,0.2); letter-spacing: 1px; line-height: 2; }
+  @media (max-width: 600px) { .form-card { padding: 32px 24px; } .couple-names { font-size: 30px; } .radio-group.horizontal { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="bg-overlay"></div>
+<div style="position:relative;z-index:1;">
+  <div class="hero">
+    <img src="https://lh3.googleusercontent.com/d/1ZPOZcKalZ7Qqh9I4JA0_ViwaurKs5epS" alt="蔡孝容 & 陳韋彤">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <span class="hero-label">Wedding Invitation · 婚禮邀請</span>
+      <div class="couple-names">孝容<span class="amp">&</span>韋彤</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="header">
+      <div class="header-ornament">
+        <div class="ornament-line"></div><div class="ornament-diamond"></div><div class="ornament-line right"></div>
+      </div>
+      <div class="header-date">2027 年 1 月 23 日　午宴</div>
+      <div class="header-venue">台北 · 文華東方酒店</div>
+      <div class="header-subtitle">蔡孝容 & 陳韋彤 誠摯邀請您出席我們的婚禮</div>
+      <div class="deadline-badge">✦ 請於 2025 年 7 月 1 日前完成回覆 ✦</div>
+    </div>
+    <div class="form-card">
+      <div class="form-content" id="formContent">
+
+        <div class="section-title">賓客資料</div>
+        <div class="form-group">
+          <label>姓名 <span class="required">*</span></label>
+          <input type="text" id="name" placeholder="請輸入您的姓名">
+        </div>
+        <div class="form-group">
+          <label>聯絡電話 <span class="required">*</span></label>
+          <input type="tel" id="phone" placeholder="請輸入手機號碼">
+        </div>
+        <div class="form-group">
+          <label>通訊地址 <span class="required">*</span></label>
+          <input type="text" id="address" placeholder="用於寄送喜帖（如選擇紙本）">
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-title">出席詳情</div>
+        <div class="form-group">
+          <label>您是哪方的賓客？<span class="required">*</span></label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="side" id="groom" value="男方賓客"><label for="groom">男方賓客</label></div>
+            <div class="radio-option"><input type="radio" name="side" id="bride" value="女方賓客"><label for="bride">女方賓客</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>出席人數 <span class="required">*</span></label>
+          <select id="attendees">
+            <option value="">請選擇人數</option>
+            <option value="1人">1 人</option>
+            <option value="2人">2 人</option>
+            <option value="3人">3 人</option>
+            <option value="4人">4 人</option>
+            <option value="5人或以上">5 人或以上</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>飲食偏好 <span class="required">*</span></label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="diet" id="meat" value="葷食"><label for="meat">葷食</label></div>
+            <div class="radio-option"><input type="radio" name="diet" id="veg" value="素食"><label for="veg">素食</label></div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-title">兒童安排</div>
+        <div class="form-group">
+          <label>是否需要兒童椅？</label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="highchair" id="chair_yes" value="需要" onclick="toggleChildrenCount(true)"><label for="chair_yes">需要</label></div>
+            <div class="radio-option"><input type="radio" name="highchair" id="chair_no" value="不需要" onclick="toggleChildrenCount(false)"><label for="chair_no">不需要</label></div>
+          </div>
+          <div class="children-count" id="chairCount">
+            <label style="margin-top:12px;">需要幾張兒童椅？</label>
+            <select id="chair_qty">
+              <option value="">請選擇</option>
+              <option value="1">1 張</option>
+              <option value="2">2 張</option>
+              <option value="3">3 張</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>是否需要兒童餐？</label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="kidsmeal" id="meal_yes" value="需要"><label for="meal_yes">需要</label></div>
+            <div class="radio-option"><input type="radio" name="kidsmeal" id="meal_no" value="不需要"><label for="meal_no">不需要</label></div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-title">喜帖偏好</div>
+        <div class="form-group">
+          <label>喜帖形式 <span class="required">*</span></label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="invite" id="digital" value="電子喜帖"><label for="digital">電子喜帖</label></div>
+            <div class="radio-option"><input type="radio" name="invite" id="paper" value="紙本喜帖"><label for="paper">紙本喜帖</label></div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-title">住宿安排</div>
+        <div class="hotel-highlight">
+          <div class="hotel-name">Mandarin Oriental, Taipei · 台北文華東方酒店</div>
+          <div class="hotel-price">NT$ 11,088 <span>/ 晚 · 賓客專屬優惠價</span></div>
+          <div class="hotel-desc">如需協助代訂，我們將於回覆後與您確認日期與房型</div>
+        </div>
+        <div class="form-group">
+          <label>是否需要協助代訂飯店住宿？</label>
+          <div class="radio-group horizontal">
+            <div class="radio-option"><input type="radio" name="hotel" id="hotel_yes" value="需要代訂"><label for="hotel_yes">需要代訂</label></div>
+            <div class="radio-option"><input type="radio" name="hotel" id="hotel_no" value="自行安排"><label for="hotel_no">自行安排</label></div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+        <div class="section-title">時空留言機</div>
+        <div class="form-group">
+          <label>寫下您對新人的祝福或想說的話</label>
+          <textarea id="message" placeholder="寫下您的祝福..." rows="4" style="width:100%;padding:14px 16px;border:1px solid #e0dbd0;border-radius:2px;font-family:'Noto Serif TC',serif;font-size:15px;color:#2c2c2c;background:#fff;transition:border-color 0.2s,box-shadow 0.2s;outline:none;resize:vertical;"></textarea>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">確認出席 · RSVP</button>
+      </div>
+
+      <div class="success-message" id="successMsg">
+        <div class="success-icon">🌿</div>
+        <h3>感謝您的回覆</h3>
+        <p>我們已收到您的出席確認<br>期待與您共度 2027 年 1 月 23 日這美好的一天<br><br>蔡孝容 & 陳韋彤 敬上</p>
+      </div>
+    </div>
+    <div class="footer-note">
+      此表單內容僅供婚禮籌備使用，不會用於其他用途<br>
+      © 2027 · 蔡孝容 & 陳韋彤 · With Love
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleChildrenCount(show) {
+    const el = document.getElementById('chairCount');
+    if (show) el.classList.add('visible');
+    else { el.classList.remove('visible'); document.getElementById('chair_qty').value = ''; }
+  }
+
+  let submitted = false;
+
+  async function submitForm() {
+    const name     = document.getElementById('name').value.trim();
+    const phone    = document.getElementById('phone').value.trim();
+    const address  = document.getElementById('address').value.trim();
+    const attendees = document.getElementById('attendees').value;
+    const side     = document.querySelector('input[name="side"]:checked');
+    const diet     = document.querySelector('input[name="diet"]:checked');
+    const invite   = document.querySelector('input[name="invite"]:checked');
+    const highchair = document.querySelector('input[name="highchair"]:checked');
+    const kidsmeal = document.querySelector('input[name="kidsmeal"]:checked');
+    const hotel    = document.querySelector('input[name="hotel"]:checked');
+    const chairQty = document.getElementById('chair_qty').value;
+
+    if (!name)      { alert('請填寫您的姓名'); return; }
+    if (!phone)     { alert('請填寫聯絡電話'); return; }
+    if (!address)   { alert('請填寫通訊地址'); return; }
+    if (!attendees) { alert('請選擇出席人數'); return; }
+    if (!side)      { alert('請選擇您是男方或女方賓客'); return; }
+    if (!diet)      { alert('請選擇飲食偏好'); return; }
+    if (!invite)    { alert('請選擇喜帖形式'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = '送出中...';
+    btn.classList.add('sending');
+
+    const params = new URLSearchParams({
+      'entry.813160475': name,
+      'entry.36632147':  phone,
+      'entry.346094615': address,
+      'entry.589748471': attendees,
+      'entry.1968580704': side.value,
+      'entry.596370535': diet.value,
+      'entry.1160800263': highchair ? highchair.value : '未填寫',
+      'entry.209869295': (highchair && highchair.value === 'needs' && chairQty) ? chairQty : '0',
+      'entry.625533623': kidsmeal ? kidsmeal.value : '未填寫',
+      'entry.1260385367': invite.value,
+      'entry.701202988': hotel ? hotel.value : '未填寫',
+      'entry.142443545': document.getElementById('message').value.trim(),
+    });
+
+    const FORM_ID = '1FAIpQLSfBzKCaq9U0JuV-ZBW2DpwEHph768SFS1rREFvamSIcfZnoRA';
+    const formEl = document.createElement('form');
+    formEl.method = 'POST';
+    formEl.action = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+    formEl.target = 'hidden_iframe';
+
+    params.forEach((value, key) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      formEl.appendChild(input);
+    });
+
+    document.body.appendChild(formEl);
+    submitted = true;
+    formEl.submit();
+    document.body.removeChild(formEl);
+  }
+</script>
+<iframe name="hidden_iframe" style="display:none;" onload="if(submitted){document.getElementById('formContent').classList.add('hidden');document.getElementById('successMsg').classList.add('show');window.scrollTo(0,0);}"></iframe>
+</body>
+</html>
