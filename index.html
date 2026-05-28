@@ -243,10 +243,10 @@
 
 
 
-    // 用 fetch no-cors 送到 Apps Script
+    // 用隱藏 form GET 送到 Apps Script
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-YvFRnTTIZPk8pSCYp4waHVL0EJfUi4VeXJ1gx8AhMUvDjTTRN6OgplwvpFs-cWt-5g/exec';
 
-    const params = new URLSearchParams({
+    const fields = {
       name:      name,
       phone:     phone,
       address:   address,
@@ -259,18 +259,31 @@
       invite:    invite.value,
       hotel:     document.querySelector('input[name="hotel"]:checked')?.value || '未填寫',
       message:   document.getElementById('message').value.trim(),
+    };
+
+    const formEl = document.createElement('form');
+    formEl.method = 'GET';
+    formEl.action = SCRIPT_URL;
+    formEl.target = 'hidden_iframe';
+
+    Object.entries(fields).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      formEl.appendChild(input);
     });
 
-    fetch(SCRIPT_URL + '?' + params.toString(), {
-      method: 'GET',
-      mode: 'no-cors',
-    }).catch(() => {});
+    document.body.appendChild(formEl);
+    formEl.submit();
+    document.body.removeChild(formEl);
 
     setTimeout(function() {
       document.getElementById('formContent').classList.add('hidden');
       document.getElementById('successMsg').classList.add('show');
-    }, 1500);
+    }, 2000);
   }
 </script>
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 </body>
 </html>
