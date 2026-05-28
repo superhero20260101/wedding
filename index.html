@@ -243,9 +243,10 @@
 
 
 
-    // 用 Apps Script doGet 送出，完全不受登入狀態影響
+    // 用 fetch no-cors 送到 Apps Script
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-YvFRnTTIZPk8pSCYp4waHVL0EJfUi4VeXJ1gx8AhMUvDjTTRN6OgplwvpFs-cWt-5g/exec';
-    const queryString = new URLSearchParams({
+
+    const params = new URLSearchParams({
       name:      name,
       phone:     phone,
       address:   address,
@@ -258,19 +259,17 @@
       invite:    invite.value,
       hotel:     document.querySelector('input[name="hotel"]:checked')?.value || '未填寫',
       message:   document.getElementById('message').value.trim(),
-    }).toString();
+    });
 
-    const img = new Image();
-    img.src = SCRIPT_URL + '?' + queryString;
-    img.onload = img.onerror = function() {
-      document.getElementById('formContent').classList.add('hidden');
-      document.getElementById('successMsg').classList.add('show');
-    };
-    // 3秒後不管有無回應都顯示成功畫面
+    fetch(SCRIPT_URL + '?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors',
+    }).catch(() => {});
+
     setTimeout(function() {
       document.getElementById('formContent').classList.add('hidden');
       document.getElementById('successMsg').classList.add('show');
-    }, 3000);
+    }, 1500);
   }
 </script>
 </body>
