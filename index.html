@@ -206,93 +206,72 @@
   </div>
 </div>
 
-
 <script>
-function toggleChildrenCount(show){
-    const el=document.getElementById("chairCount");
-    if(show){
-        el.classList.add("visible");
-    }else{
-        el.classList.remove("visible");
-        document.getElementById("chair_qty").value='';
-    }
-}
+  function toggleChildrenCount(show) {
+    const el = document.getElementById('chairCount');
+    if (show) el.classList.add('visible');
+    else { el.classList.remove('visible'); document.getElementById('chair_qty').value = ''; }
+  }
 
-async function submitForm(){
+  async function submitForm() {
+    const name     = document.getElementById('name').value.trim();
+    const phone    = document.getElementById('phone').value.trim();
+    const address  = document.getElementById('address').value.trim();
+    const attendees = document.getElementById('attendees').value;
+    const side     = document.querySelector('input[name="side"]:checked');
+    const diet     = document.querySelector('input[name="diet"]:checked');
+    const invite   = document.querySelector('input[name="invite"]:checked');
+    const highchair = document.querySelector('input[name="highchair"]:checked');
+    const kidsmeal = document.querySelector('input[name="kidsmeal"]:checked');
+    const hotel    = document.querySelector('input[name="hotel"]:checked');
+    const chairQty = document.getElementById('chair_qty').value;
 
-const name=document.getElementById("name").value.trim();
-const phone=document.getElementById("phone").value.trim();
-const address=document.getElementById("address").value.trim();
-const attendees=document.getElementById("attendees").value;
+    if (!name)      { alert('請填寫您的姓名'); return; }
+    if (!phone)     { alert('請填寫聯絡電話'); return; }
+    if (!address)   { alert('請填寫通訊地址'); return; }
+    if (!attendees) { alert('請選擇出席人數'); return; }
+    if (!side)      { alert('請選擇您是男方或女方賓客'); return; }
+    if (!diet)      { alert('請選擇飲食偏好'); return; }
+    if (!invite)    { alert('請選擇喜帖形式'); return; }
 
-const side=document.querySelector('input[name="side"]:checked');
-const diet=document.querySelector('input[name="diet"]:checked');
-const invite=document.querySelector('input[name="invite"]:checked');
-const highchair=document.querySelector('input[name="highchair"]:checked');
-const kidsmeal=document.querySelector('input[name="kidsmeal"]:checked');
-const hotel=document.querySelector('input[name="hotel"]:checked');
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = '送出中...';
+    btn.classList.add('sending');
 
-const chairQty=document.getElementById("chair_qty").value;
-const message=document.getElementById("message").value.trim();
+    // 兒童椅數量併入兒童椅欄位
+    const chairValue = highchair ? (highchair.value === '需要' && chairQty ? `需要（${chairQty}張）` : highchair.value) : '未填寫';
 
-if(!name){alert("請填寫姓名");return;}
-if(!phone){alert("請填寫聯絡電話");return;}
-if(!address){alert("請填寫通訊地址");return;}
-if(!attendees){alert("請選擇出席人數");return;}
-if(!side){alert("請選擇男方或女方賓客");return;}
-if(!diet){alert("請選擇飲食偏好");return;}
-if(!invite){alert("請選擇喜帖形式");return;}
 
-const btn=document.getElementById("submitBtn");
-btn.innerText="送出中...";
-btn.disabled=true;
-btn.classList.add("sending");
 
-const formData=new FormData();
+    // 用 Apps Script doGet 送出，完全不受登入狀態影響
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-YvFRnTTIZPk8pSCYp4waHVL0EJfUi4VeXJ1gx8AhMUvDjTTRN6OgplwvpFs-cWt-5g/exec';
+    const queryString = new URLSearchParams({
+      name:      name,
+      phone:     phone,
+      address:   address,
+      attendees: attendees,
+      side:      side.value,
+      diet:      diet.value,
+      highchair: document.querySelector('input[name="highchair"]:checked')?.value || '未填寫',
+      chairQty:  document.getElementById('chair_qty').value || '0',
+      kidsmeal:  document.querySelector('input[name="kidsmeal"]:checked')?.value || '未填寫',
+      invite:    invite.value,
+      hotel:     document.querySelector('input[name="hotel"]:checked')?.value || '未填寫',
+      message:   document.getElementById('message').value.trim(),
+    }).toString();
 
-formData.append("entry.813160475",name);
-formData.append("entry.36632147",phone);
-formData.append("entry.346094615",address);
-formData.append("entry.589748471",attendees);
-formData.append("entry.1968580704",side.value);
-formData.append("entry.596370535",diet.value);
-formData.append("entry.1160800263",highchair?highchair.value:"未填寫");
-formData.append("entry.209869295",(highchair && highchair.value==="需要" && chairQty)?chairQty:"0");
-formData.append("entry.625533623",kidsmeal?kidsmeal.value:"未填寫");
-formData.append("entry.1260385367",invite.value);
-formData.append("entry.701202988",hotel?hotel.value:"未填寫");
-formData.append("entry.142443545",message);
-
-try{
-
-await fetch(
-"https://docs.google.com/forms/d/e/1FAIpQLSfBzKCaq9U0JuV-ZBW2DpwEHph768SFS1rREFvamSIcfZnoRA/formResponse",
-{
-method:"POST",
-mode:"no-cors",
-body:formData
-}
-);
-
-document.getElementById("formContent").classList.add("hidden");
-document.getElementById("successMsg").classList.add("show");
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}catch(error){
-
-alert("送出失敗，請再試一次");
-
-btn.innerText="確認出席 · RSVP";
-btn.disabled=false;
-btn.classList.remove("sending");
-
-}
-}
+    const img = new Image();
+    img.src = SCRIPT_URL + '?' + queryString;
+    img.onload = img.onerror = function() {
+      document.getElementById('formContent').classList.add('hidden');
+      document.getElementById('successMsg').classList.add('show');
+    };
+    // 3秒後不管有無回應都顯示成功畫面
+    setTimeout(function() {
+      document.getElementById('formContent').classList.add('hidden');
+      document.getElementById('successMsg').classList.add('show');
+    }, 3000);
+  }
 </script>
-
 </body>
 </html>
